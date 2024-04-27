@@ -7,15 +7,15 @@ YELLOW="\033[33m"
 PLAIN='\033[0m'
 
 red() {
-    echo -e "${RED}${1}${PLAIN}"
+    echo -e "\033[31m\033[01m$1\033[0m"
 }
 
 green() {
-    echo -e "${GREEN}${1}${PLAIN}"
+    echo -e "\033[32m\033[01m$1\033[0m"
 }
 
 yellow() {
-    echo -e "${YELLOW}${1}${PLAIN}"
+    echo -e "\033[33m\033[01m$1\033[0m"
 }
 
 # 选择客户端 CPU 架构
@@ -33,18 +33,12 @@ endpointyx(){
     # 删除之前的优选结果文件，以避免出错
     rm -f result.csv
 
+    
     # 下载优选工具软件，感谢 GitHub 项目：https://github.com/peanut996/CloudflareWarpSpeedTest
     wget https://gitlab.com/Misaka-blog/warp-script/-/raw/main/files/warp-yxip/warp-linux-$(archAffix) -O warp
-
-    # 检查是否下载成功
-    if [ $? -ne 0 ]; then
-        yellow "下载优选工具失败，正在尝试重新下载..."
-        # 关闭接口
-        wg-quick down wgcf
-        # 再次尝试下载优选工具
-        wget https://gitlab.com/Misaka-blog/warp-script/-/raw/main/files/warp-yxip/warp-linux-$(archAffix) -O warp || { red "再次下载优选工具失败，退出脚本"; exit 1; }
-    fi
     
+    # 关闭接口
+    wg-quick down wgcf    
     # 取消 Linux 自带的线程限制，以便生成优选 Endpoint IP
     ulimit -n 102400
     
